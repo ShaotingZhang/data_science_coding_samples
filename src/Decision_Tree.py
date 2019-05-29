@@ -46,18 +46,19 @@ class MyAdaboost(BaseEstimator):
         self.target = Y.columns[0]
 
         N, _ = X.shape
-        alpha = np.ones(N) / N
+        alpha = np.ones(N) / N      # data weights
 
         for m in range(self.M):
             tree = WeightedDecisionTree(max_depth=2, min_error=1e-15)
             tree.fit(X, Y, data_weights=alpha)
             prediction = tree.predict(X)
-
+            # count the error of weight
             weighted_error = alpha.dot(prediction != Y[self.target])
-
+            # count the weight of current model
             model_weight = 0.5 * (np.log(1 - weighted_error) - np.log(weighted_error))
-            
+            # update the weight
             alpha = alpha * np.exp(-model_weight * Y[self.target] * prediction)
+            # weight normalize
             alpha = alpha / alpha.sum()
 
             self.models.append(tree)
