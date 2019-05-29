@@ -13,6 +13,7 @@ from tqdm import tqdm
 
 
 def label_img(img):
+    # change the label into dummy variables
     word_label = img.split('.')[-3]
     if word_label == 'cat':
         return [1, 0]
@@ -26,8 +27,8 @@ def create_train_data(train_dir, img_size):
             continue
         label = label_img(img)
         path = os.path.join(train_dir, img)
-        img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-        img = cv2.resize(img, (img_size, img_size))
+        img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)    # read the grey images
+        img = cv2.resize(img, (img_size, img_size))     # motify the size of images
         training_data.append([np.array(img), np.array(label)])
     shuffle(training_data)
     return training_data
