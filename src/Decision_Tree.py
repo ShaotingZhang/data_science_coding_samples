@@ -227,13 +227,13 @@ def main():
     data_folder = "../input"
     data = pd.read_csv(os.path.join(data_folder, "mushrooms.csv"))
 
-    "process the input data"
+    # process the input data
     target = 'class'
     data[target] = data.apply(lambda row: -1 if row[0] == 'e' else 1, axis=1)
     cols = data.columns.drop(target)
     data_set = dummies(data, columns=cols)
 
-    "split the input data into training data and testing data"
+    # split the input data into training data and testing data
     train_data, test_data = train_test_split(data_set, test_size=0.3)
 
     trainX, trainY = train_data[train_data.columns[1:]], pd.DataFrame(train_data[target])
@@ -262,7 +262,7 @@ def main():
     m = MyAdaboost(10)
     m.fit(trainX, trainY)
 
-    m.score(testX, testY)
+    print (m.score(testX, testY))
 
 if __name__ == '__main__':
     main()
