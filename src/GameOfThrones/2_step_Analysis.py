@@ -7,7 +7,7 @@ from math import e
 from numpy import *
 from numpy.linalg import eig,norm
 import sys
-sys.path.append('../zend3js/')
+sys.path.insert(0, '../../zend3js/')
 import d3js
 from time import sleep
 import colorsys

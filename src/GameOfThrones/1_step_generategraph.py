@@ -64,9 +64,9 @@ def GenerateGraph(filename,G):       #  for each file to generate the graph
 def main():
     address = []
     address.append('http://gameofthrones.wikia.com/wiki/Category:Characters?display=page&sort=mostvisited')
-    address.append('http://gameofthrones.wikia.com/wiki/Category:Characters?display=page&sort=mostvisited&pagefrom=Forel%2C+Syrio%0ASyrio+Forel#mw-pages')
-    address.append('http://gameofthrones.wikia.com/wiki/Category:Characters?display=page&sort=mostvisited&pagefrom=Lannister%2C+Tommen+II%0ATommen+II+Lannister#mw-pages')
-    address.append('http://gameofthrones.wikia.com/wiki/Category:Characters?display=page&sort=mostvisited&pagefrom=Selmy%2C+Barristan%0ABarristan+Selmy#mw-pages')
+    #address.append('http://gameofthrones.wikia.com/wiki/Category:Characters?display=page&sort=mostvisited&pagefrom=Forel%2C+Syrio%0ASyrio+Forel#mw-pages')
+    #address.append('http://gameofthrones.wikia.com/wiki/Category:Characters?display=page&sort=mostvisited&pagefrom=Lannister%2C+Tommen+II%0ATommen+II+Lannister#mw-pages')
+    #address.append('http://gameofthrones.wikia.com/wiki/Category:Characters?display=page&sort=mostvisited&pagefrom=Selmy%2C+Barristan%0ABarristan+Selmy#mw-pages')
     #address.append('http://gameofthrones.wikia.com/wiki/Category:Characters?display=page&sort=mostvisited&pagefrom=White+Walker+%28Winter+is+Coming%29#mw-pages')
 
     PAGE_START = 'mw-pages'
@@ -77,8 +77,8 @@ def main():
 
     G = zen.Graph()
     nodes = []
-    index = [2,3,3,2]
-
+    #index = [2,3,3,2]
+    index = [0,0,0,0]
     for i in range(4):
         url = address[i]
         f = urllib.urlopen(url)

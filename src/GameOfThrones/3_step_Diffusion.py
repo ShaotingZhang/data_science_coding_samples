@@ -7,7 +7,7 @@ from math import e
 from numpy import *
 from numpy.linalg import eig,norm
 import sys
-sys.path.append('../zend3js/')
+sys.path.insert(0, '../../zend3js/')
 import d3js
 from time import sleep
 import colorsys
@@ -59,9 +59,9 @@ def main():
     d3.update()
     sleep(1)
 
-    dt = 0.05 # the "infintesimal" size steps we take to integrate
-    T = 6 # the end of the simulation time
-    time = linspace(0,T,int(T/dt)) # the array of time points spaced by dt
+    dt = 0.05   # the "infintesimal" size steps we take to integrate
+    T = 6    # the end of the simulation time
+    time = linspace(0,T,int(T/dt))  # the array of time points spaced by dt
 
     print '============================\nDIFFUSION\n'
     N = G.num_nodes
