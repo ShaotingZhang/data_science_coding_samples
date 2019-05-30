@@ -157,23 +157,23 @@ def main():
                             d = D[i][j]
 
 
-    uidx,vidx = where(D==d)
-    path = zen.algorithms.shortest_path.pred2path_(uidx[1],vidx[1],P)
-    pathname = []
-    for i in path:
-            a = G.node_object(i)
-            pathname.append(a)
-    d = len(path)
-    print ('The network has a diameter of %i.' % d)
-    print (pathname)
+#    uidx,vidx = where(D==d)
+#    path = zen.algorithms.shortest_path.pred2path_(uidx[1],vidx[1],P)
+#    pathname = []
+#    for i in path:
+#            a = G.node_object(i)
+#            pathname.append(a)
+#    d = len(path)
+#    print ('The network has a diameter of %i.' % d)
+#    print (pathname)
            
     # code to visualize the path for i in range(len(path) + 1):
-    for i in range(len(path) - 1):
-         a = path[i]
-         b = path[i + 1]
-         c = G.edge_idx_(a,b)    
-         d3.highlight_edges_([c])
-         d3.update()
+#    for i in range(len(path) - 1):
+#         a = path[i]
+#         b = path[i + 1]
+#         c = G.edge_idx_(a,b)    
+#         d3.highlight_edges_([c])
+#         d3.update()
     sleep(3) 
 
 
