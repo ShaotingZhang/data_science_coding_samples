@@ -79,7 +79,7 @@ def main():
     nodes = []
     #index = [2,3,3,2]
     index = [0,0,0,0]
-    for i in range(4):
+    for i in range(1):
         url = address[i]
         f = urllib.urlopen(url)
         s = f.read()

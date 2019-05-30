@@ -103,7 +103,8 @@ def main():
     G = zen.io.gml.read('GameOfThrones.gml',weight = True, directed = False)
 
 
-    d3 = d3js.D3jsRenderer(G, interactive=False, autolaunch=False)
+    #d3 = d3js.D3jsRenderer(G, interactive=False, autolaunch=False)
+    d3 = d3js.D3jsRenderer(G, interactive=False)
     d3.update()
     sleep(1)
 
