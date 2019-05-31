@@ -1,10 +1,10 @@
 # data science coding samples
 
-Two Small projects
+Customize implement two classification algorithms of convolutional neural network and decision tree with adaboosting.
 
 ## About the projects
 
-Two python file is in the src folder. One is to classify the dogs and cats. Another one is classify the mushrooms with adaboosting.
+Two python file is in the src folder. One is to classify the dogs and cats using convolutionall neural network. The input is images with labels -- dog or cat. Another one is to classify the mushrooms using decision tree with adaboosting. The input is mushrooms with features and labels -- the quality of mushrooms is good or not.
 
 ## How to Run
 
