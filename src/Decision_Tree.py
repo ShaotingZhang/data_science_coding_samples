@@ -233,7 +233,7 @@ def main():
     data[target] = data.apply(lambda row: -1 if row[0] == 'e' else 1, axis=1)
     cols = data.columns.drop(target)
     data_set = dummies(data, columns=cols)
-
+    print(data_set.columns)
     # split the input data into training data and testing data
     train_data, test_data = train_test_split(data_set, test_size=0.3)
 

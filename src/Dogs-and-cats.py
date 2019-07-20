@@ -28,7 +28,7 @@ def create_train_data(train_dir, img_size):
         label = label_img(img)
         path = os.path.join(train_dir, img)
         img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)    # read the grey images
-        img = cv2.resize(img, (img_size, img_size))     # motify the size of images
+        img = cv2.resize(img, (img_size, img_size))     # modify the size of images
         training_data.append([np.array(img), np.array(label)])
     shuffle(training_data)
     return training_data
@@ -40,8 +40,9 @@ def process_test_data(test_dir, img_size):
             continue
         path = os.path.join(test_dir, img)
         imgnum = img.split('.')[0]
-        img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-        img = cv2.resize(img, (img_size, img_size))
+        img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)    # read the grey images
+
+        img = cv2.resize(img, (img_size, img_size))     # modify the size of images
         testing_data.append([np.array(img), imgnum])
     shuffle(testing_data)
     return testing_data
@@ -51,7 +52,7 @@ def Model_generation(train_dir, img_size, lr):
     tf.reset_default_graph()        # empty the graph
     convnet = input_data(shape=[None, img_size, img_size, 1], name='input')
 
-    # Three CNN layers and two max pooling layers
+    # Convolutional layers with max pooling layers
     convnet = conv_2d(convnet, 32, 5, activation='relu')
     convnet = max_pool_2d(convnet, 5)
 
@@ -69,7 +70,7 @@ def Model_generation(train_dir, img_size, lr):
 
     # Two fully connected layer and prediction layer
     convnet = fully_connected(convnet, 1024, activation='relu')
-    convnet = dropout(convnet, 0.8)
+    convnet = dropout(convnet, 0.8)     # randomly drop out the node in case of over fitting
 
     convnet = fully_connected(convnet, 2, activation='softmax')
     convnet = regression(convnet, optimizer='adam', learning_rate=lr, loss='categorical_crossentropy', name='targets')
@@ -77,7 +78,7 @@ def Model_generation(train_dir, img_size, lr):
     # split the training data set
     model = tflearn.DNN(convnet, tensorboard_dir='log')
     train_now = train_data[:-500]
-    test_now = train_data[-500:]
+    test_now = train_data[-500:]        #use the last 500 taining data to test the accuracy of model
 
     train_in = np.array([i[0] for i in train_now], dtype=np.float64).reshape(-1, img_size, img_size, 1)
     train_out = np.array([i[1] for i in train_now], dtype=np.float64)

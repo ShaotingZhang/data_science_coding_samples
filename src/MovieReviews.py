@@ -5,60 +5,60 @@ import re
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
-
+from sklearn.model_selection import cross_val_score
 
 def deal_with_word(review):     # only keep the English words
     review_text = re.sub("[^a-zA-Z]"," ", review)
     words = review_text.lower()
-    return(words)
+    return words
 
 def main():
     data_dir = '../input/MovieReview'
     train = pd.read_csv(data_dir + '/labeledTrainData.tsv', delimiter="\t")
     test = pd.read_csv(data_dir + '/testData.tsv', delimiter="\t")
 
-
     #print(train.head())
     #print(train.shape)
     #print(test.shape)
 
-
     y_train = train['sentiment']
 
     train_data = []
-    for reviews in train['review']:
-        train_data.append(deal_with_word(reviews))
+    for i in range(0,len(train['review'])):
+        if i % 4000 == 0:
+            print ('training process line: ', str(i))
+        train_data.append(deal_with_word(train['review'][i]))
     train_data = np.array(train_data)
 
     test_data = []
-    for reviews in test['review']:
-        test_data.append(deal_with_word(reviews))
-    test_data = np.array(test_data)
-
-
-    tfidf = TfidfVectorizer(
-                ngram_range =(1, 2),
-                use_idf = 1,
-                smooth_idf = 1,
-                stop_words = 'english')    # remove English stop words to improve the efficiency
+    for i in range(0,len(test['review'])):
+        if i % 4000 == 0:
+            print ('testing process line: ', str(i))
+        test_data.append(deal_with_word(test['review'][i])) 
+    test_data = np.array(test_data)    
 
     vectorizer = CountVectorizer()
-    train_data_count = vectorizer.fit_transform(train_data)     # fit -- count the word,    transform -- word to vector
-    test_data_count = vectorizer.transform(test_data)
 
-    word_freq_df = pd.DataFrame({'term': tfidf.get_feature_names(), 'tfidf':data_train_count_tf.toarray().sum(axis=0)})
-    plt.plot(word_freq_df.occurrences)
+    data_train_count = vectorizer.fit_transform(train_data)   # fit -- count the word,    transform -- word to vector
+    data_test_count = vectorizer.transform(test_data)
 
-    plt.show()
+    tfidf = TfidfVectorizer(
+           ngram_range=(1, 3),
+           use_idf=1,
+           smooth_idf=1,
+           stop_words = 'english') 
+    
+    data_train_count_tf = tfidf.fit_transform(train_data)
+    data_test_count_tf  = vectorizer.transform(test_data)
 
-    word_freq_df_sort = word_freq_df.sort_values(by=['tfidf'], ascending=False)
-    word_freq_df_sort.head()
 
     clf = MultinomialNB()
-    clf.fit(train_data_count, y_train)
-    predict = clf.predict(test_data_count)
+    clf.fit(data_train_count, y_train)
+    
+    print ("cross-validation score: ", np.mean(cross_val_score(clf, data_train_count, y_train, cv=10, scoring='accuracy')))
+    print ("cross-validation score: ", np.mean(cross_val_score(clf, data_train_count_tf, y_train, cv=10, scoring='accuracy')))
 
-    test = clf.predict(train_data_count)
+    predict = clf.predict(data_test_count)
 
     df = pd.DataFrame({'id': test['id'], 'sentiment': predict})
     df.to_csv('submission.csv', index = False, header = True)

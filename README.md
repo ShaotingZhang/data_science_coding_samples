@@ -1,12 +1,12 @@
 # data science coding samples
 
-Customized implementions of two classification algorithms: convolutional neural network and decision tree with adaboosting.
+Customized implementations of two classification algorithms: convolutional neural network and decision tree with adaboosting.
 
 ## About the projects
 
 Two python files in the src folder. 
-1) Dogs-and-cats.py: classify the dogs and cats using convolutionall neural network. The input is images with labels -- dog or cat. 
-2) Decision_tree.py: classify the mushrooms using decision tree with adaboosting. The input is mushrooms with features and labels -- each label denotes whether the quality of mushrooms is good or not.
+1) Dogs-and-cats.py: classify the dogs and cats using convolutionall neural network. The training data is images with labels -- dog or cat. 
+2) Decision_tree.py: classify the mushrooms using decision tree with adaboosting. The training data is mushrooms with features and labels -- each label denotes whether the quality of mushrooms is good or not.
 
 ## How to Run
 
