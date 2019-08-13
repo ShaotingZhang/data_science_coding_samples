@@ -8,82 +8,92 @@ from sklearn.base import BaseEstimator
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
+# define tree node
 class TreeNode:
     def __init__(self, is_leaf, prediction, split_feature):
         self.is_leaf = is_leaf
         self.prediction = prediction
-        self.split_feature = split_feature
+        self.split_feature = split_feature      # define the best feature which is used to split the data into children
         self.left = None
         self.right = None
 
+# define a weighted decision tree
 class WeightedDecisionTree(BaseEstimator):
-    def __init__(self, max_depth, min_error):
+    def __init__(self, max_depth, min_error):   # define the initial value of tree
         self.max_depth = max_depth
         self.min_error = min_error
 
-    def fit(self, X, Y, data_weights=None):
-        data_set = pd.concat([X, Y], axis=1)
-        features = X.columns
-        target = Y.columns[0]
+    def fit(self, X, Y, data_weights=None):     # build the tree based on X,Y
+        data_set = pd.concat([X, Y], axis=1)    # pick up the data which will be used to build the tree
+        features = X.columns                    # pick up the features from X
+        target = Y.columns[0]                   # pick up the class of mushrooms from Y
+        # build a weighted tree        
         self.root_node = create_weighted_tree(data_set, data_weights, features, target, current_depth=0, max_depth=self.max_depth, min_error=self.min_error)
 
-    def predict(self, X):
+    def predict(self, X):           # predict the class of mushrooms
         prediction = X.apply(lambda row: predict_single_data(self.root_node, row), axis=1)
         return prediction
 
-    def score(self, testX, testY):
+    def score(self, testX, testY):  # compare the prediction and fact to know the accuracy
         target = testY.columns[0]
         result = self.predict(testX)
         return accuracy_score(testY[target], result)
 
+# define the adaboosting with decision tree
 class MyAdaboost(BaseEstimator):
-    def __init__(self, M):
+    def __init__(self, M):          # define the number of trees
         self.M = M
 
-    def fit(self, X, Y):
-        self.models = []
-        self.model_weights = []
-        self.target = Y.columns[0]
+    def fit(self, X, Y):    # create several weighted dicision trees to adaboosting
+        self.models = []            # initial the models in adaboosting
+        self.model_weights = []     # initial the weights of models
+        self.target = Y.columns[0]  # get the class of mushrooms
 
         N, _ = X.shape
-        alpha = np.ones(N) / N      # data weights
+        alpha = np.ones(N) / N      # initial data weights
 
         for m in range(self.M):
+            # create an empty tree with initial values            
             tree = WeightedDecisionTree(max_depth=2, min_error=1e-15)
+            # fit the data into the tree            
             tree.fit(X, Y, data_weights=alpha)
+            # get the prediction of the tree
             prediction = tree.predict(X)
             # count the error of weight
             weighted_error = alpha.dot(prediction != Y[self.target])
-            # count the weight of current model
+            # count the importance of current model
             model_weight = 0.5 * (np.log(1 - weighted_error) - np.log(weighted_error))
-            # update the weight
+            # update the weight of data            
             alpha = alpha * np.exp(-model_weight * Y[self.target] * prediction)
-            # weight normalize
+            # normalize the weight
             alpha = alpha / alpha.sum()
-
-            self.models.append(tree)
+            # add the weighted decision tree to models
+            self.models.append(tree)            
+            # add the impotance of the model into model_weights            
             self.model_weights.append(model_weight)
 
+    # predict the class of mushrooms
     def predict(self, X):
-        N, _ = X.shape
-        result = np.zeros(N)
+        N, _ = X.shape              # get the length of column
+        result = np.zeros(N)        # create an empty result
+        # get the result based on the models we get
         for wt, tree in zip(self.model_weights, self.models):
             result += wt * tree.predict(X)
         return np.sign(result)
 
+    # compute the accuracy of the adaboosting
     def score(self, testX, testY):
         result = self.predict(testX)
         return accuracy_score(testY[self.target], result)
 
-
+# process the columns which has more than two values
 def dummies(data, columns=['pclass', 'name_title', 'embarked', 'sex']):
-    """
-    add the column to the data
-    """
     for col in columns:
         data[col] = data[col].apply(lambda x: str(x))
+        # divide the column based on its values
         new_cols = [col + '_' + i for i in data[col].unique()]
-        data = pd.concat([data, pd.get_dummies(data[col], prefix=col)[new_cols]], axis=1)
+        # add the values into new columns
+        data = pd.concat([data, pd.get_dummies(data[col], prefix=col)[new_cols]], axis=1)      
         del data[col]
     return data
 
@@ -96,15 +106,14 @@ def node_weighted_mistakes(targets_in_node, data_weights):
     weight_negative = sum(data_weights[targets_in_node == -1])
     weighted_mistakes_positive = weight_negative
 
-    # return the mistake weight with the label
+    # return the weight mistake with the label
     if weighted_mistakes_negative < weighted_mistakes_positive:
         return (weighted_mistakes_negative, -1)
     else:
-        return (weighted_mistakes_positive, + 1)
+        return (weighted_mistakes_positive, +1)
 
-
+# find the best feature to split the data
 def best_split_weighted(data, features, target, data_weights):
-    # return the best feature
     best_feature = None
     best_error = float("inf")
     num_data_points = float(len(data))
